@@ -3,50 +3,30 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Mi Sistema</title>
+<title>Rutina Pro</title>
 
-<link rel="stylesheet" href="styles.css">
 <link rel="manifest" href="manifest.json">
+<link rel="stylesheet" href="styles.css">
 
 </head>
 
 <body>
 
-<h1>🔥 Mi Sistema</h1>
+<h1>🔥 Rutina Pro</h1>
 
-<div class="card">
-<h3>📅 Día</h3>
 <select id="day"></select>
-</div>
 
-<div class="card">
-<h3>✅ Rutina</h3>
+<div id="stats"></div>
+
 <div id="checks"></div>
-</div>
-
-<div class="card">
-<h3>🍽️ Comida del día</h3>
-<select id="comida">
-<option>Avena + huevos</option>
-<option>Huevos + tortillas</option>
-<option>Pollo + arroz</option>
-</select>
-</div>
-
-<div class="card">
-<h3>🏋️ Gym</h3>
-<p>Pecho / Tríceps</p>
-<p>4x10 - descanso 90s</p>
-</div>
-
-<div class="card">
-<h3>⚖️ Peso</h3>
-<input type="number" id="peso" placeholder="Ej: 66.5">
-<button onclick="guardarPeso()">Guardar</button>
-<canvas id="grafica"></canvas>
-</div>
 
 <script src="app.js"></script>
+
+<script>
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('service-worker.js');
+}
+</script>
 
 </body>
 </html>
