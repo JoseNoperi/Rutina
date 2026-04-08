@@ -1,5 +1,5 @@
 body {
-    font-family: -apple-system;
+    font-family: -apple-system, BlinkMacSystemFont;
     background: #f2f2f7;
     padding: 20px;
     margin: 0;
@@ -9,12 +9,20 @@ h1 {
     text-align: center;
 }
 
+select {
+    width: 100%;
+    padding: 10px;
+    border-radius: 12px;
+    margin-bottom: 15px;
+    border: none;
+}
+
 .card {
     background: white;
     padding: 15px;
     border-radius: 16px;
     margin-bottom: 15px;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.05);
 }
 
 .check {
@@ -24,5 +32,5 @@ h1 {
 
 input {
     margin-right: 10px;
-    transform: scale(1.2);
+    transform: scale(1.3);
 }
