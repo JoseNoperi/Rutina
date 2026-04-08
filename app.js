@@ -1,89 +1,11 @@
-const diasData = {
-"Lunes": {
-timeline: [
-"11:30 Desayuno (avena + huevo + plátano)",
-"1:00 Universidad",
-"6:00 Salida",
-"6:10 Llegar gym",
-"6:10-8:00 PUSH (pecho, hombro, tríceps)",
-"8:30 Cena (pollo + arroz)",
-"10:30 Rutina cara",
-"12:00 Dormir"
-]
-},
-"Martes": {
-timeline: [
-"11:30 Desayuno (huevos + tortillas + frijoles)",
-"1:00 Universidad",
-"7:00 Gym",
-"7:00-9:00 PULL (espalda, bíceps)",
-"9:30 Cena (pollo + tortillas)",
-"10:45 Rutina cara",
-"12:00 Dormir"
-]
-},
-"Miércoles": {
-timeline: [
-"12:00 Desayuno (avena + fruta)",
-"3:00 Universidad",
-"7:00 Gym",
-"7:00-9:00 LEGS (pierna completa)",
-"9:30 Cena (carne + arroz)",
-"10:45 Rutina cara",
-"12:00 Dormir"
-]
-},
-"Jueves": {
-timeline: [
-"12:00 Desayuno (huevos + tortillas)",
-"3:00 Universidad",
-"7:00 Gym",
-"7:00-9:00 PUSH",
-"9:30 Cena (pollo + arroz)",
-"10:45 Rutina cara",
-"12:00 Dormir"
-]
-},
-"Viernes": {
-timeline: [
-"11:30 Desayuno (ligero)",
-"12:30 Rutina en casa (flexiones + abs 30 min)",
-"2:00 Universidad",
-"8:00 Cena libre controlada",
-"10:30 Rutina cara",
-"12:00 Dormir"
-]
-},
-"Sábado": {
-timeline: [
-"6:00 Uber",
-"11:00 Desayuno (huevos + tortillas)",
-"2:00 Snack",
-"6:00 Regreso",
-"8:00 Cena",
-"10:30 Rutina cara",
-"12:00 Dormir"
-]
-},
-"Domingo": {
-timeline: [
-"6:00 Uber",
-"11:00 Desayuno (avena + huevo)",
-"2:00 Snack",
-"6:00 Regreso",
-"8:00 Cena",
-"10:30 Rutina cara",
-"12:00 Dormir"
-]
-}
-};
+const dias = ["Lunes","Martes","Miércoles","Jueves","Viernes","Sábado","Domingo"];
 
 const rutinaBase = [
 "Rutina cara mañana",
 "Desayuno",
 "Comida",
 "Snack",
-"Gym / Actividad",
+"Entrenamiento",
 "Cena",
 "Rutina cara noche",
 "2L agua"
@@ -91,47 +13,88 @@ const rutinaBase = [
 
 const daySelect = document.getElementById("day");
 const checksDiv = document.getElementById("checks");
+const statsDiv = document.getElementById("stats");
 
-Object.keys(diasData).forEach(d => {
-let opt = document.createElement("option");
-opt.textContent = d;
-daySelect.appendChild(opt);
+// llenar select
+dias.forEach(d => {
+  let opt = document.createElement("option");
+  opt.textContent = d;
+  daySelect.appendChild(opt);
 });
 
-function render() {
-const day = daySelect.value;
-checksDiv.innerHTML = "";
-
-// TIMELINE
-let timelineHTML = "<div class='card'><h3>📅 Día</h3>";
-diasData[day].timeline.forEach(t => {
-timelineHTML += `<p>${t}</p>`;
-});
-timelineHTML += "</div>";
-
-checksDiv.innerHTML += timelineHTML;
-
-// CHECKLIST
-let data = JSON.parse(localStorage.getItem(day)) || [];
-
-rutinaBase.forEach((r, i) => {
-let div = document.createElement("div");
-div.className = "check";
-
-let input = document.createElement("input");
-input.type = "checkbox";
-input.checked = data[i] || false;
-
-input.onchange = () => {
-data[i] = input.checked;
-localStorage.setItem(day, JSON.stringify(data));
-};
-
-div.appendChild(input);
-div.append(" " + r);
-checksDiv.appendChild(div);
-});
+// STREAK
+function getToday() {
+  return new Date().toLocaleDateString();
 }
+
+function updateStreak(done) {
+  let streak = parseInt(localStorage.getItem("streak") || 0);
+  let last = localStorage.getItem("last");
+
+  if (done && last !== getToday()) {
+    streak++;
+    localStorage.setItem("streak", streak);
+    localStorage.setItem("last", getToday());
+  }
+}
+
+// render
+function render() {
+  let day = daySelect.value;
+  checksDiv.innerHTML = "";
+
+  let data = JSON.parse(localStorage.getItem(day)) || [];
+  let completed = 0;
+
+  rutinaBase.forEach((r,i) => {
+    let div = document.createElement("div");
+    div.className = "check";
+
+    let input = document.createElement("input");
+    input.type = "checkbox";
+    input.checked = data[i] || false;
+
+    if (input.checked) completed++;
+
+    input.onchange = () => {
+      data[i] = input.checked;
+      localStorage.setItem(day, JSON.stringify(data));
+      render();
+    };
+
+    div.appendChild(input);
+    div.append(" " + r);
+    checksDiv.appendChild(div);
+  });
+
+  let percent = Math.round((completed / rutinaBase.length) * 100);
+
+  statsDiv.innerHTML = `
+  <div class="card">
+    <h3>📊 Progreso</h3>
+    <p>${percent}% completado</p>
+    <p>🔥 Racha: ${localStorage.getItem("streak") || 0}</p>
+  </div>
+  `;
+
+  if (percent === 100) updateStreak(true);
+}
+
+// NOTIFICACIONES
+if ("Notification" in window) {
+  Notification.requestPermission();
+}
+
+setInterval(() => {
+  let h = new Date().getHours();
+
+  if (h === 11) new Notification("🍳 Desayuno");
+  if (h === 18) new Notification("🏋️ Gym");
+  if (h === 22) new Notification("🧴 Cara");
+}, 60000);
+
+daySelect.onchange = render;
+render();
 
 daySelect.onchange = render;
 render();
