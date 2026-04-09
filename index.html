@@ -107,6 +107,12 @@ button.reset {
   background: #111;
   color: white;
 }
+
+/* Listas sin viñetas para mejor lectura (opcional para el skincare) */
+.lista-skincare {
+  padding-left: 20px;
+  margin-top: 5px;
+}
 </style>
 </head>
 
@@ -133,7 +139,7 @@ button.reset {
 
 <script>
 
-// ===== RUTINAS COMPLETAS =====
+// ===== RUTINAS COMPLETAS (Sin cambios) =====
 function rutina(dia){
 
 if(dia==="lunes" || dia==="jueves"){
@@ -214,16 +220,16 @@ Actividad ligera
 
 }
 
-// ===== COMIDAS =====
+// ===== COMIDAS (Cantidades y menús corregidos) =====
 function comidas(dia){
 const data = {
-lunes:["Avena + 2 huevos + plátano","Pollo 150g + arroz + tortillas","Atún + tostadas"],
-martes:["Huevos + pan + fruta","Carne + arroz","Pollo + papa"],
-miercoles:["Avena + plátano","Pollo + arroz","Quesadillas + frijoles"],
-jueves:["Huevos + tortilla","Carne + arroz","Atún + tostadas"],
-viernes:["Avena + huevo","Comida casera","Huevos + pan"],
-sabado:["Huevos + pan","Trabajo","Cena ligera"],
-domingo:["Libre","Familiar","Ligera"]
+lunes:["80g avena + 2 huevos + 1 plátano","150g pollo + 150g arroz + verduras","120g atún + 2 tortillas + verduras"],
+martes:["80g avena + 2 huevos + 1 manzana","150g carne molida + 150g arroz + verduras","120g pollo + 2 tortillas + verduras"],
+miercoles:["80g avena + 2 huevos + 1 plátano","150g pollo + 150g arroz + verduras","120g atún + 2 tortillas + verduras"],
+jueves:["80g avena + 2 huevos + 1 manzana","150g carne molida + 150g arroz + verduras","120g pollo + 2 tortillas + verduras"],
+viernes:["80g avena + 2 huevos + 1 plátano","150g pollo + 150g arroz + verduras","120g atún + 2 tortillas + verduras"],
+sabado:["80g avena + 2 huevos + 1 plátano","150g carne molida + 150g arroz + verduras","120g pollo + 2 tortillas + verduras"],
+domingo:["80g avena + 2 huevos + fruta","150g pollo o carne + 150g arroz + verduras","120g atún o pollo + 2 tortillas + verduras"]
 };
 
 return `<div class="card">
@@ -237,7 +243,42 @@ return `<div class="card">
 </div>`;
 }
 
-// ===== CHECKLIST =====
+// ===== SKINCARE (Nuevo apartado) =====
+function skincare(dia){
+  let pasoHielo = "";
+  if(dia === "martes" || dia === "jueves" || dia === "sabado"){
+    pasoHielo = `<li><b>Agua fría → Sumergir la cara en agua con hielo 1–2 minutos</b></li>`;
+  }
+
+  return `<div class="card">
+  <h2>🧴 Skincare</h2>
+  
+  <b>🌅 MAÑANA (TODOS LOS DÍAS)</b>
+  <ul class="lista-skincare">
+    <li>Lavarse los dientes</li>
+    <li>Lavar cara</li>
+    ${pasoHielo}
+    <li>Secar cara</li>
+    <li>Aplicar gotas para ojeras</li>
+    <li>Aplicar minoxidil en la barba</li>
+    <li>Crema hidratante</li>
+    <li>Protector solar</li>
+  </ul>
+  
+  <br>
+  
+  <b>🌙 NOCHE (TODOS LOS DÍAS)</b>
+  <ul class="lista-skincare">
+    <li>Lavarse los dientes</li>
+    <li>Lavar cara</li>
+    <li>Secar cara</li>
+    <li>Aplicar minoxidil en la barba</li>
+    <li>Crema hidratante</li>
+  </ul>
+  </div>`;
+}
+
+// ===== CHECKLIST (Sin cambios) =====
 function checklist(dia){
 
 const tareas = [
@@ -359,8 +400,9 @@ document.getElementById("contenido").innerHTML = mandado();
 return;
 }
 
+// Aquí se inyecta el skincare antes del checklist
 document.getElementById("contenido").innerHTML =
-rutina(dia) + comidas(dia) + checklist(dia);
+rutina(dia) + comidas(dia) + skincare(dia) + checklist(dia);
 
 setTimeout(()=>cargar(dia),100);
 }
