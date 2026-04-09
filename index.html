@@ -113,6 +113,16 @@ button.reset {
   padding-left: 20px;
   margin-top: 5px;
 }
+
+/* Títulos internos para el mandado */
+.categoria-mandado {
+  margin-top: 15px;
+  margin-bottom: 5px;
+  font-size: 16px;
+  color: #333;
+  border-bottom: 1px solid #eee;
+  padding-bottom: 5px;
+}
 </style>
 </head>
 
@@ -224,7 +234,7 @@ Actividad ligera
 
 }
 
-// ===== COMIDAS (Cantidades y menús corregidos) =====
+// ===== COMIDAS (Sin cambios) =====
 function comidas(dia){
 const data = {
 lunes:["80g avena + 2 huevos + 1 plátano","150g pollo + 150g arroz + verduras","120g atún + 2 tortillas + verduras"],
@@ -247,7 +257,7 @@ return `<div class="card">
 </div>`;
 }
 
-// ===== SKINCARE (Nuevo apartado) =====
+// ===== SKINCARE (Sin cambios) =====
 function skincare(dia){
   let pasoHielo = "";
   if(dia === "martes" || dia === "jueves" || dia === "sabado"){
@@ -376,21 +386,42 @@ alert("Semana reiniciada");
 location.reload();
 }
 
-// ===== MANDADO =====
+// ===== MANDADO (NUEVA SECCIÓN CATEGORIZADA) =====
 function mandado(){
 return `<div class="card">
 <h2>🛒 Mandado semanal</h2>
+
+<h3 class="categoria-mandado">🥩 Principal (Proteínas)</h3>
 <div class="checklist">
-<label><input type="checkbox"> 3kg pollo</label>
-<label><input type="checkbox"> 1kg arroz</label>
-<label><input type="checkbox"> 30 huevos</label>
-<label><input type="checkbox"> 5 latas atún</label>
-<label><input type="checkbox"> tortillas</label>
-<label><input type="checkbox"> avena</label>
-<label><input type="checkbox"> crema cacahuate</label>
-<label><input type="checkbox"> verduras</label>
-<label><input type="checkbox"> fruta</label>
+  <label><input type="checkbox"> 2-3 kg de Pollo</label>
+  <label><input type="checkbox"> 1 kg de Carne molida</label>
+  <label><input type="checkbox"> 30 Huevos</label>
+  <label><input type="checkbox"> 5-6 latas de Atún</label>
 </div>
+
+<h3 class="categoria-mandado">🌾 Despensa (Carbohidratos y Grasas)</h3>
+<div class="checklist">
+  <label><input type="checkbox"> 1 kg de Arroz</label>
+  <label><input type="checkbox"> 1 kg de Avena</label>
+  <label><input type="checkbox"> 2-3 paquetes de Tortillas</label>
+  <label><input type="checkbox"> 1 frasco de Crema de cacahuate</label>
+</div>
+
+<h3 class="categoria-mandado">🍎 Frutas</h3>
+<div class="checklist">
+  <label><input type="checkbox"> 7-10 Plátanos</label>
+  <label><input type="checkbox"> 5-7 Manzanas</label>
+  <label><input type="checkbox"> Fruta extra de temporada (opcional)</label>
+</div>
+
+<h3 class="categoria-mandado">🥦 Verduras</h3>
+<div class="checklist">
+  <label><input type="checkbox"> 1 kg Brócoli / Coliflor</label>
+  <label><input type="checkbox"> 1 kg Calabacitas / Zanahoria</label>
+  <label><input type="checkbox"> 1 kg Tomate y Cebolla (para guisar)</label>
+  <label><input type="checkbox"> Lechuga / Espinacas (para ensalada)</label>
+</div>
+
 </div>`;
 }
 
