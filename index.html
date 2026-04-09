@@ -1,31 +1,291 @@
  <!DOCTYPE html>
 <html lang="es">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Rutina Pro</title>
+  <meta charset="UTF-8">
+  <title>🔥 Rutina Pro</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<link rel="manifest" href="manifest.json">
-<link rel="stylesheet" href="styles.css">
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #f0f0f0;
+    }
 
+    header {
+      background: #111;
+      color: white;
+      padding: 15px;
+      text-align: center;
+      font-size: 20px;
+    }
+
+    .container {
+      padding: 15px;
+    }
+
+    .card {
+      background: white;
+      border-radius: 15px;
+      padding: 15px;
+      margin: 15px 0;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    }
+
+    h2 {
+      margin-top: 0;
+    }
+
+    /* CHECKLIST */
+    .checklist label {
+      display: block;
+      margin: 8px 0;
+      font-size: 14px;
+    }
+
+    /* TABLA COMIDAS */
+    .tabla-comidas {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 10px;
+    }
+
+    .tabla-comidas th {
+      background: #111;
+      color: white;
+      padding: 10px;
+    }
+
+    .tabla-comidas td {
+      border: 1px solid #ddd;
+      padding: 10px;
+      vertical-align: top;
+    }
+
+    .tabla-comidas tr:nth-child(even) {
+      background: #f5f5f5;
+    }
+
+    /* RUTINA */
+    ul {
+      padding-left: 20px;
+    }
+
+    /* BOTONES DIAS */
+    .dias {
+      display: flex;
+      overflow-x: auto;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+
+    .dias button {
+      padding: 10px;
+      border: none;
+      border-radius: 10px;
+      background: #ddd;
+      cursor: pointer;
+    }
+
+    .dias button.active {
+      background: #111;
+      color: white;
+    }
+  </style>
 </head>
 
 <body>
 
-<h1>🔥 Rutina Pro</h1>
+<header>🔥 Rutina Pro</header>
 
-<select id="day"></select>
+<div class="container">
 
-<div id="stats"></div>
+  <!-- DIAS -->
+  <div class="dias">
+    <button onclick="cambiarDia('lunes')" class="active">Lunes</button>
+    <button onclick="cambiarDia('martes')">Martes</button>
+    <button onclick="cambiarDia('miercoles')">Miércoles</button>
+    <button onclick="cambiarDia('jueves')">Jueves</button>
+    <button onclick="cambiarDia('viernes')">Viernes</button>
+    <button onclick="cambiarDia('sabado')">Sábado</button>
+    <button onclick="cambiarDia('domingo')">Domingo</button>
+  </div>
 
-<div id="checks"></div>
+  <!-- CONTENIDO -->
+  <div id="contenido"></div>
 
-<script src="app.js"></script>
+</div>
 
 <script>
-if ('serviceWorker' in navigator) {
-  navigator.serviceWorker.register('service-worker.js');
+
+function cambiarDia(dia) {
+
+  document.querySelectorAll(".dias button").forEach(b => b.classList.remove("active"));
+  event.target.classList.add("active");
+
+  let contenido = "";
+
+  // ===== RUTINAS =====
+
+  const rutinaPush = `
+  <div class="card">
+    <h2>🏋️ PUSH (Pecho, Hombro, Tríceps)</h2>
+
+    <p><strong>Pecho:</strong></p>
+    <ul>
+      <li>Press banca plano – 4x8-12</li>
+      <li>Press inclinado – 4x8-12</li>
+      <li>Aperturas – 3x12</li>
+    </ul>
+
+    <p><strong>Hombro:</strong></p>
+    <ul>
+      <li>Press militar – 4x8-12</li>
+      <li>Elevaciones laterales – 4x12</li>
+      <li>Pájaros – 3x12</li>
+    </ul>
+
+    <p><strong>Tríceps:</strong></p>
+    <ul>
+      <li>Fondos – 3x10</li>
+      <li>Extensión en polea – 3x12</li>
+      <li>Press cerrado – 3x10</li>
+    </ul>
+  </div>`;
+
+  const rutinaPull = `
+  <div class="card">
+    <h2>🏋️ PULL (Espalda, Bíceps)</h2>
+
+    <p><strong>Espalda:</strong></p>
+    <ul>
+      <li>Dominadas – 4x8</li>
+      <li>Remo con barra – 4x8-12</li>
+      <li>Jalón al pecho – 3x12</li>
+    </ul>
+
+    <p><strong>Bíceps:</strong></p>
+    <ul>
+      <li>Curl con barra – 4x10</li>
+      <li>Curl alterno – 3x12</li>
+      <li>Curl martillo – 3x12</li>
+    </ul>
+  </div>`;
+
+  const rutinaLegs = `
+  <div class="card">
+    <h2>🏋️ LEGS (Pierna completa)</h2>
+
+    <ul>
+      <li>Sentadilla – 4x8-12</li>
+      <li>Prensa – 4x10</li>
+      <li>Extensión de pierna – 3x12</li>
+      <li>Curl femoral – 3x12</li>
+      <li>Pantorrilla – 4x15</li>
+    </ul>
+  </div>`;
+
+  // ===== CARA =====
+
+  function rutinaCara(hielo=false){
+    return `
+    <div class="card">
+      <h2>🧴 Rutina de cara</h2>
+      <ul>
+        <li>Limpiador facial</li>
+        ${hielo ? "<li>Hielo en la cara</li>" : ""}
+        <li>Serum</li>
+        <li>Hidratante</li>
+        <li>Bloqueador solar</li>
+      </ul>
+    </div>`;
+  }
+
+  // ===== COMIDA =====
+
+  const comidas = `
+  <div class="card">
+    <h2>🍽️ Comidas</h2>
+
+    <table class="tabla-comidas">
+      <tr>
+        <th>Comida</th>
+        <th>Alimentos</th>
+      </tr>
+
+      <tr>
+        <td>Desayuno</td>
+        <td>1 taza avena<br>2 huevos<br>1 plátano</td>
+      </tr>
+
+      <tr>
+        <td>Comida</td>
+        <td>150g pollo<br>1 taza arroz<br>Verduras</td>
+      </tr>
+
+      <tr>
+        <td>Cena</td>
+        <td>150g carne<br>Arroz o papa<br>Verduras</td>
+      </tr>
+    </table>
+  </div>`;
+
+  // ===== CHECKLIST =====
+
+  const checklist = `
+  <div class="card">
+    <h2>✔ Checklist</h2>
+    <div class="checklist">
+      <label><input type="checkbox"> Rutina cara mañana</label>
+      <label><input type="checkbox"> Desayuno</label>
+      <label><input type="checkbox"> Comida</label>
+      <label><input type="checkbox"> Gym</label>
+      <label><input type="checkbox"> Cena</label>
+      <label><input type="checkbox"> Rutina cara noche</label>
+      <label><input type="checkbox"> 2L agua</label>
+    </div>
+  </div>`;
+
+  // ===== LOGICA DIAS =====
+
+  if(dia === "lunes"){
+    contenido = rutinaPush + rutinaCara() + comidas + checklist;
+  }
+
+  if(dia === "martes"){
+    contenido = rutinaPull + rutinaCara(true) + comidas + checklist;
+  }
+
+  if(dia === "miercoles"){
+    contenido = rutinaLegs + rutinaCara() + comidas + checklist;
+  }
+
+  if(dia === "jueves"){
+    contenido = rutinaPush + rutinaCara(true) + comidas + checklist;
+  }
+
+  if(dia === "viernes"){
+    contenido = rutinaPull + rutinaCara() + comidas + checklist;
+  }
+
+  if(dia === "sabado"){
+    contenido = rutinaLegs + rutinaCara(true) + comidas + checklist;
+  }
+
+  if(dia === "domingo"){
+    contenido = `
+    <div class="card">
+      <h2>😴 Descanso</h2>
+      <p>Recuperación + tareas pendientes</p>
+    </div>` + rutinaCara() + comidas + checklist;
+  }
+
+  document.getElementById("contenido").innerHTML = contenido;
 }
+
+// Cargar lunes por defecto
+cambiarDia("lunes");
+
 </script>
 
 </body>
