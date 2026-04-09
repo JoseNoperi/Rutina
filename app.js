@@ -1,292 +1,241 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-  <meta charset="UTF-8">
-  <title>🔥 Rutina Pro</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+import React, { useState, useEffect } from "react";
 
-  <style>
-    body {
-      margin: 0;
-      font-family: Arial, sans-serif;
-      background: #f0f0f0;
+const dias = [
+  "Lunes",
+  "Martes",
+  "Miércoles",
+  "Jueves",
+  "Viernes",
+  "Sábado",
+  "Domingo",
+  "Mandado",
+];
+
+const comidasPorDia = {
+  Lunes: {
+    desayuno: "80g avena + 2 huevos + 1 plátano",
+    comida: "150g pollo + 150g arroz + verduras",
+    cena: "120g atún + 2 tortillas + verduras",
+  },
+  Martes: {
+    desayuno: "80g avena + 2 huevos + 1 manzana",
+    comida: "150g carne molida + 150g arroz + verduras",
+    cena: "120g pollo + 2 tortillas + verduras",
+  },
+  Miércoles: {
+    desayuno: "80g avena + 2 huevos + 1 plátano",
+    comida: "150g pollo + 150g arroz + verduras",
+    cena: "120g atún + 2 tortillas + verduras",
+  },
+  Jueves: {
+    desayuno: "80g avena + 2 huevos + 1 manzana",
+    comida: "150g carne molida + 150g arroz + verduras",
+    cena: "120g pollo + 2 tortillas + verduras",
+  },
+  Viernes: {
+    desayuno: "80g avena + 2 huevos + 1 plátano",
+    comida: "150g pollo + 150g arroz + verduras",
+    cena: "120g atún + 2 tortillas + verduras",
+  },
+  Sábado: {
+    desayuno: "80g avena + 2 huevos + 1 plátano",
+    comida: "150g carne molida + 150g arroz + verduras",
+    cena: "120g pollo + 2 tortillas + verduras",
+  },
+  Domingo: {
+    desayuno: "80g avena + 2 huevos + 1 fruta",
+    comida: "150g pollo o carne + 150g arroz + verduras",
+    cena: "120g atún o pollo + 2 tortillas + verduras",
+  },
+};
+
+const checklistBase = [
+  "Rutina cara mañana",
+  "Desayuno",
+  "Comida",
+  "Snack",
+  "Gym / Actividad",
+  "Cena",
+  "Rutina cara noche",
+  "2L agua",
+];
+
+const mandado = [
+  "2–3 kg pollo",
+  "1 kg arroz",
+  "30 huevos",
+  "5–6 latas de atún",
+  "Tortillas",
+  "1 kg avena",
+  "Crema de cacahuate",
+  "Verduras",
+  "Fruta",
+];
+
+export default function App() {
+  const [dia, setDia] = useState("Lunes");
+  const [checks, setChecks] = useState(() => {
+    const data = localStorage.getItem("rutina");
+    return data ? JSON.parse(data) : {};
+  });
+
+  useEffect(() => {
+    localStorage.setItem("rutina", JSON.stringify(checks));
+  }, [checks]);
+
+  const toggle = (d, item) => {
+    setChecks((prev) => ({
+      ...prev,
+      [d]: {
+        ...prev[d],
+        [item]: !prev?.[d]?.[item],
+      },
+    }));
+  };
+
+  const progreso = (d) => {
+    const total = checklistBase.length;
+    const done = checklistBase.filter((i) => checks?.[d]?.[i]).length;
+    return Math.round((done / total) * 100);
+  };
+
+  // RESET AUTOMÁTICO
+  useEffect(() => {
+    if (progreso("Domingo") === 100) {
+      localStorage.removeItem("rutina");
+      setChecks({});
     }
+  }, [checks]);
 
-    header {
-      background: #111;
-      color: white;
-      padding: 15px;
-      text-align: center;
-      font-size: 20px;
-    }
+  const resetManual = () => {
+    localStorage.removeItem("rutina");
+    setChecks({});
+  };
 
-    .container {
-      padding: 15px;
-    }
+  const rutinaCara = (d) => {
+    const hielo = ["Martes", "Jueves", "Sábado"].includes(d);
+    return [
+      "Lavar cara",
+      "Agua fría",
+      hielo ? "Agua con hielo (1-2 min)" : null,
+      "Secar sin tallar",
+      "Crema hidratante",
+      "Protector solar",
+    ].filter(Boolean);
+  };
 
-    .card {
-      background: white;
-      border-radius: 15px;
-      padding: 15px;
-      margin: 15px 0;
-      box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-    }
+  const rutinaGym = (d) => {
+    const rutinas = {
+      Lunes: "PUSH → Press plano, inclinado, aperturas, press militar, laterales, tríceps",
+      Martes: "PULL → Dominadas, remo, jalón, curl barra, mancuernas",
+      Miércoles: "PIERNA → Sentadilla, prensa, extensión, femoral, pantorrilla",
+      Jueves: "PUSH → Repetición con variaciones",
+      Viernes: "Casa → Lagartijas, abdominales",
+      Sábado: "Trabajo",
+      Domingo: "Trabajo",
+    };
+    return rutinas[d];
+  };
 
-    h2 {
-      margin-top: 0;
-    }
+  return (
+    <div style={{ padding: 20, fontFamily: "sans-serif" }}>
+      <h1>Rutina</h1>
 
-    /* CHECKLIST */
-    .checklist label {
-      display: block;
-      margin: 8px 0;
-      font-size: 14px;
-    }
+      {/* DIAS */}
+      <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
+        {dias.map((d) => (
+          <button key={d} onClick={() => setDia(d)}>
+            {d}
+          </button>
+        ))}
+      </div>
 
-    /* TABLA COMIDAS */
-    .tabla-comidas {
-      width: 100%;
-      border-collapse: collapse;
-      margin-top: 10px;
-    }
+      {/* CONTENIDO */}
+      {dia !== "Mandado" && (
+        <>
+          <h2>{dia}</h2>
 
-    .tabla-comidas th {
-      background: #111;
-      color: white;
-      padding: 10px;
-    }
+          {/* CARA */}
+          <h3>🧴 Cuidado de la cara</h3>
+          {rutinaCara(dia).map((step) => (
+            <div key={step}>• {step}</div>
+          ))}
 
-    .tabla-comidas td {
-      border: 1px solid #ddd;
-      padding: 10px;
-      vertical-align: top;
-    }
+          {/* COMIDA */}
+          <h3>🍽️ Comidas</h3>
+          <table border="1" cellPadding="5">
+            <tbody>
+              <tr>
+                <td>Desayuno</td>
+                <td>{comidasPorDia[dia].desayuno}</td>
+              </tr>
+              <tr>
+                <td>Comida</td>
+                <td>{comidasPorDia[dia].comida}</td>
+              </tr>
+              <tr>
+                <td>Cena</td>
+                <td>{comidasPorDia[dia].cena}</td>
+              </tr>
+            </tbody>
+          </table>
 
-    .tabla-comidas tr:nth-child(even) {
-      background: #f5f5f5;
-    }
+          {/* GYM */}
+          <h3>🏋️ Rutina</h3>
+          <div>{rutinaGym(dia)}</div>
 
-    /* RUTINA */
-    ul {
-      padding-left: 20px;
-    }
+          {/* CHECKLIST */}
+          <h3>✅ Checklist</h3>
+          {checklistBase.map((item) => (
+            <label key={item} style={{ display: "block" }}>
+              <input
+                type="checkbox"
+                checked={checks?.[dia]?.[item] || false}
+                onChange={() => toggle(dia, item)}
+              />
+              {item}
+            </label>
+          ))}
 
-    /* BOTONES DIAS */
-    .dias {
-      display: flex;
-      overflow-x: auto;
-      gap: 10px;
-      margin-bottom: 10px;
-    }
+          {/* PROGRESO */}
+          <h3>Progreso: {progreso(dia)}%</h3>
+          <div style={{ height: 10, background: "#ddd", borderRadius: 10 }}>
+            <div
+              style={{
+                width: `${progreso(dia)}%`,
+                height: "100%",
+                background: "green",
+                borderRadius: 10,
+              }}
+            />
+          </div>
 
-    .dias button {
-      padding: 10px;
-      border: none;
-      border-radius: 10px;
-      background: #ddd;
-      cursor: pointer;
-    }
+          {/* RESET */}
+          <button onClick={resetManual} style={{ marginTop: 15 }}>
+            Reiniciar semana
+          </button>
+        </>
+      )}
 
-    .dias button.active {
-      background: #111;
-      color: white;
-    }
-  </style>
-</head>
-
-<body>
-
-<header>Rutina</header>
-
-<div class="container">
-
-  <!-- DIAS -->
-  <div class="dias">
-    <button onclick="cambiarDia('lunes')" class="active">Lunes</button>
-    <button onclick="cambiarDia('martes')">Martes</button>
-    <button onclick="cambiarDia('miercoles')">Miércoles</button>
-    <button onclick="cambiarDia('jueves')">Jueves</button>
-    <button onclick="cambiarDia('viernes')">Viernes</button>
-    <button onclick="cambiarDia('sabado')">Sábado</button>
-    <button onclick="cambiarDia('domingo')">Domingo</button>
-  </div>
-
-  <!-- CONTENIDO -->
-  <div id="contenido"></div>
-
-</div>
-
-<script>
-
-function cambiarDia(dia) {
-
-  document.querySelectorAll(".dias button").forEach(b => b.classList.remove("active"));
-  event.target.classList.add("active");
-
-  let contenido = "";
-
-  // ===== RUTINAS =====
-
-  const rutinaPush = `
-  <div class="card">
-    <h2>🏋️ PUSH (Pecho, Hombro, Tríceps)</h2>
-
-    <p><strong>Pecho:</strong></p>
-    <ul>
-      <li>Press banca plano – 4x8-12</li>
-      <li>Press inclinado – 4x8-12</li>
-      <li>Aperturas – 3x12</li>
-    </ul>
-
-    <p><strong>Hombro:</strong></p>
-    <ul>
-      <li>Press militar – 4x8-12</li>
-      <li>Elevaciones laterales – 4x12</li>
-      <li>Pájaros – 3x12</li>
-    </ul>
-
-    <p><strong>Tríceps:</strong></p>
-    <ul>
-      <li>Fondos – 3x10</li>
-      <li>Extensión en polea – 3x12</li>
-      <li>Press cerrado – 3x10</li>
-    </ul>
-  </div>`;
-
-  const rutinaPull = `
-  <div class="card">
-    <h2>🏋️ PULL (Espalda, Bíceps)</h2>
-
-    <p><strong>Espalda:</strong></p>
-    <ul>
-      <li>Dominadas – 4x8</li>
-      <li>Remo con barra – 4x8-12</li>
-      <li>Jalón al pecho – 3x12</li>
-    </ul>
-
-    <p><strong>Bíceps:</strong></p>
-    <ul>
-      <li>Curl con barra – 4x10</li>
-      <li>Curl alterno – 3x12</li>
-      <li>Curl martillo – 3x12</li>
-    </ul>
-  </div>`;
-
-  const rutinaLegs = `
-  <div class="card">
-    <h2>🏋️ LEGS (Pierna completa)</h2>
-
-    <ul>
-      <li>Sentadilla – 4x8-12</li>
-      <li>Prensa – 4x10</li>
-      <li>Extensión de pierna – 3x12</li>
-      <li>Curl femoral – 3x12</li>
-      <li>Pantorrilla – 4x15</li>
-    </ul>
-  </div>`;
-
-  // ===== CARA =====
-
-  function rutinaCara(hielo=false){
-    return `
-    <div class="card">
-      <h2>🧴 Rutina de cara</h2>
-      <ul>
-        <li>Limpiador facial</li>
-        ${hielo ? "<li>Hielo en la cara</li>" : ""}
-        <li>Serum</li>
-        <li>Hidratante</li>
-        <li>Bloqueador solar</li>
-      </ul>
-    </div>`;
-  }
-
-  // ===== COMIDA =====
-
-  const comidas = `
-  <div class="card">
-    <h2>🍽️ Comidas</h2>
-
-    <table class="tabla-comidas">
-      <tr>
-        <th>Comida</th>
-        <th>Alimentos</th>
-      </tr>
-
-      <tr>
-        <td>Desayuno</td>
-        <td>1 taza avena<br>2 huevos<br>1 plátano</td>
-      </tr>
-
-      <tr>
-        <td>Comida</td>
-        <td>150g pollo<br>1 taza arroz<br>Verduras</td>
-      </tr>
-
-      <tr>
-        <td>Cena</td>
-        <td>150g carne<br>Arroz o papa<br>Verduras</td>
-      </tr>
-    </table>
-  </div>`;
-
-  // ===== CHECKLIST =====
-
-  const checklist = `
-  <div class="card">
-    <h2>✔ Checklist</h2>
-    <div class="checklist">
-      <label><input type="checkbox"> Rutina cara mañana</label>
-      <label><input type="checkbox"> Desayuno</label>
-      <label><input type="checkbox"> Comida</label>
-      <label><input type="checkbox"> Gym</label>
-      <label><input type="checkbox"> Cena</label>
-      <label><input type="checkbox"> Rutina cara noche</label>
-      <label><input type="checkbox"> 2L agua</label>
+      {/* MANDADO */}
+      {dia === "Mandado" && (
+        <>
+          <h2>🛒 Mandado</h2>
+          {mandado.map((item) => (
+            <label key={item} style={{ display: "block" }}>
+              <input
+                type="checkbox"
+                checked={checks?.Mandado?.[item] || false}
+                onChange={() => toggle("Mandado", item)}
+              />
+              {item}
+            </label>
+          ))}
+        </>
+      )}
     </div>
-  </div>`;
-
-  // ===== LOGICA DIAS =====
-
-  if(dia === "lunes"){
-    contenido = rutinaPush + rutinaCara() + comidas + checklist;
-  }
-
-  if(dia === "martes"){
-    contenido = rutinaPull + rutinaCara(true) + comidas + checklist;
-  }
-
-  if(dia === "miercoles"){
-    contenido = rutinaLegs + rutinaCara() + comidas + checklist;
-  }
-
-  if(dia === "jueves"){
-    contenido = rutinaPush + rutinaCara(true) + comidas + checklist;
-  }
-
-  if(dia === "viernes"){
-    contenido = rutinaPull + rutinaCara() + comidas + checklist;
-  }
-
-  if(dia === "sabado"){
-    contenido = rutinaLegs + rutinaCara(true) + comidas + checklist;
-  }
-
-  if(dia === "domingo"){
-    contenido = `
-    <div class="card">
-      <h2>😴 Descanso</h2>
-      <p>Recuperación + tareas pendientes</p>
-    </div>` + rutinaCara() + comidas + checklist;
-  }
-
-  document.getElementById("contenido").innerHTML = contenido;
+  );
 }
-
-// Cargar lunes por defecto
-cambiarDia("lunes");
-
-</script>
 
 </body>
 </html>
