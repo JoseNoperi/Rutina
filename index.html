@@ -1,6 +1,374 @@
-import React from "react";
-import ReactDOM from "react-dom/client";
-import App from "./App";
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Rutina</title>
 
-const root = ReactDOM.createRoot(document.getElementById("root"));
-root.render(<App />);
+<style>
+body {
+  margin: 0;
+  font-family: Arial;
+  background: #f0f0f0;
+}
+
+header {
+  background: #111;
+  color: white;
+  text-align: center;
+  padding: 15px;
+  font-size: 20px;
+}
+
+.container {
+  padding: 15px;
+}
+
+.card {
+  background: white;
+  border-radius: 15px;
+  padding: 15px;
+  margin: 15px 0;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+}
+
+.dias {
+  display: flex;
+  overflow-x: auto;
+  gap: 10px;
+}
+
+.dias button {
+  padding: 10px;
+  border: none;
+  border-radius: 10px;
+  background: #ddd;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.dias button.active {
+  background: #111;
+  color: white;
+}
+
+.tabla-comidas {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 10px;
+}
+
+.tabla-comidas th {
+  background: #111;
+  color: white;
+  padding: 10px;
+}
+
+.tabla-comidas td {
+  border: 1px solid #ddd;
+  padding: 10px;
+}
+
+.checklist label {
+  display: block;
+  margin: 6px 0;
+}
+
+/* PROGRESO */
+.progress-box {
+  margin-top: 10px;
+}
+
+.progress-bar {
+  width: 100%;
+  height: 10px;
+  background: #ddd;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.progress-fill {
+  height: 100%;
+  width: 0%;
+  background: #111;
+  transition: 0.3s;
+}
+
+.progress-text {
+  font-size: 12px;
+  margin-top: 5px;
+}
+
+button.reset {
+  margin-top: 10px;
+  padding: 8px;
+  border: none;
+  border-radius: 8px;
+  background: #111;
+  color: white;
+}
+</style>
+</head>
+
+<body>
+
+<header>Rutina</header>
+
+<div class="container">
+
+<div class="dias">
+  <button onclick="cambiarDia('lunes')" class="active">Lunes</button>
+  <button onclick="cambiarDia('martes')">Martes</button>
+  <button onclick="cambiarDia('miercoles')">Miércoles</button>
+  <button onclick="cambiarDia('jueves')">Jueves</button>
+  <button onclick="cambiarDia('viernes')">Viernes</button>
+  <button onclick="cambiarDia('sabado')">Sábado</button>
+  <button onclick="cambiarDia('domingo')">Domingo</button>
+  <button onclick="cambiarDia('mandado')">🛒 Mandado</button>
+</div>
+
+<div id="contenido"></div>
+
+</div>
+
+<script>
+
+// ===== RUTINAS COMPLETAS =====
+function rutina(dia){
+
+if(dia==="lunes" || dia==="jueves"){
+return `<div class="card">
+<h2>🏋️ PUSH</h2>
+
+<b>Pecho:</b>
+<ul>
+<li>Press banca plano – 4x8-12</li>
+<li>Press inclinado – 4x8-12</li>
+<li>Aperturas – 3x12</li>
+</ul>
+
+<b>Hombro:</b>
+<ul>
+<li>Press militar – 4x8-12</li>
+<li>Elevaciones laterales – 4x12</li>
+<li>Pájaros – 3x12</li>
+</ul>
+
+<b>Tríceps:</b>
+<ul>
+<li>Fondos – 3x10</li>
+<li>Extensión polea – 3x12</li>
+<li>Press cerrado – 3x10</li>
+</ul>
+</div>`;
+}
+
+if(dia==="martes"){
+return `<div class="card">
+<h2>🏋️ PULL</h2>
+
+<b>Espalda:</b>
+<ul>
+<li>Dominadas – 4x8</li>
+<li>Remo barra – 4x8-12</li>
+<li>Jalón pecho – 3x12</li>
+</ul>
+
+<b>Bíceps:</b>
+<ul>
+<li>Curl barra – 4x10</li>
+<li>Curl alterno – 3x12</li>
+<li>Martillo – 3x12</li>
+</ul>
+</div>`;
+}
+
+if(dia==="miercoles"){
+return `<div class="card">
+<h2>🏋️ LEGS</h2>
+<ul>
+<li>Sentadilla – 4x8-12</li>
+<li>Prensa – 4x10</li>
+<li>Extensión – 3x12</li>
+<li>Femoral – 3x12</li>
+<li>Pantorrilla – 4x15</li>
+</ul>
+</div>`;
+}
+
+if(dia==="viernes"){
+return `<div class="card">
+<h2>🏠 Casa</h2>
+Flexiones 4x12<br>
+Sentadillas 4x15<br>
+Abdomen 4x15
+</div>`;
+}
+
+if(dia==="sabado" || dia==="domingo"){
+return `<div class="card">
+<h2>💼 Trabajo</h2>
+Actividad ligera
+</div>`;
+}
+
+}
+
+// ===== COMIDAS =====
+function comidas(dia){
+const data = {
+lunes:["Avena + 2 huevos + plátano","Pollo 150g + arroz + tortillas","Atún + tostadas"],
+martes:["Huevos + pan + fruta","Carne + arroz","Pollo + papa"],
+miercoles:["Avena + plátano","Pollo + arroz","Quesadillas + frijoles"],
+jueves:["Huevos + tortilla","Carne + arroz","Atún + tostadas"],
+viernes:["Avena + huevo","Comida casera","Huevos + pan"],
+sabado:["Huevos + pan","Trabajo","Cena ligera"],
+domingo:["Libre","Familiar","Ligera"]
+};
+
+return `<div class="card">
+<h2>🍽️ Comidas</h2>
+<table class="tabla-comidas">
+<tr><th>Tiempo</th><th>Comida</th></tr>
+<tr><td>Desayuno</td><td>${data[dia][0]}</td></tr>
+<tr><td>Comida</td><td>${data[dia][1]}</td></tr>
+<tr><td>Cena</td><td>${data[dia][2]}</td></tr>
+</table>
+</div>`;
+}
+
+// ===== CHECKLIST =====
+function checklist(dia){
+
+const tareas = [
+"Rutina cara mañana",
+"Desayuno",
+"Comida",
+"Snack",
+"Gym / Actividad",
+"Cena",
+"Rutina cara noche",
+"2L agua"
+];
+
+let html = `<div class="card"><h2>✔ Checklist</h2><div class="checklist">`;
+
+tareas.forEach((t,i)=>{
+let extra = "";
+
+if(t.includes("cara") && (dia==="martes" || dia==="jueves" || dia==="sabado")){
+extra = " (hielo)";
+}
+
+html += `<label>
+<input type="checkbox" id="${dia}-${i}" onchange="guardar('${dia}-${i}')">
+${t}${extra}
+</label>`;
+});
+
+html += `</div>
+
+<div class="progress-box">
+<div class="progress-bar"><div class="progress-fill" id="barra"></div></div>
+<div class="progress-text" id="texto"></div>
+</div>
+
+<button class="reset" onclick="resetSemana()">Reiniciar semana</button>
+
+</div>`;
+
+return html;
+}
+
+// ===== GUARDAR =====
+function guardar(id){
+localStorage.setItem(id, document.getElementById(id).checked);
+actualizarProgreso();
+}
+
+// ===== CARGAR =====
+function cargar(dia){
+let total = 8;
+let done = 0;
+
+for(let i=0;i<8;i++){
+let id = dia+"-"+i;
+if(localStorage.getItem(id)==="true"){
+document.getElementById(id).checked = true;
+done++;
+}
+}
+
+actualizarBarra(done,total);
+
+// reset automático domingo
+if(dia==="domingo" && done===8){
+resetSemana();
+}
+}
+
+// ===== PROGRESO =====
+function actualizarProgreso(){
+let checks = document.querySelectorAll(".checklist input");
+let total = checks.length;
+let done = 0;
+
+checks.forEach(c=>{ if(c.checked) done++; });
+
+actualizarBarra(done,total);
+}
+
+function actualizarBarra(done,total){
+let pct = (done/total)*100;
+document.getElementById("barra").style.width = pct+"%";
+document.getElementById("texto").innerText = done+" / "+total;
+}
+
+// ===== RESET =====
+function resetSemana(){
+localStorage.clear();
+alert("Semana reiniciada");
+location.reload();
+}
+
+// ===== MANDADO =====
+function mandado(){
+return `<div class="card">
+<h2>🛒 Mandado semanal</h2>
+<div class="checklist">
+<label><input type="checkbox"> 3kg pollo</label>
+<label><input type="checkbox"> 1kg arroz</label>
+<label><input type="checkbox"> 30 huevos</label>
+<label><input type="checkbox"> 5 latas atún</label>
+<label><input type="checkbox"> tortillas</label>
+<label><input type="checkbox"> avena</label>
+<label><input type="checkbox"> crema cacahuate</label>
+<label><input type="checkbox"> verduras</label>
+<label><input type="checkbox"> fruta</label>
+</div>
+</div>`;
+}
+
+// ===== CAMBIO DIA =====
+function cambiarDia(dia){
+document.querySelectorAll(".dias button").forEach(b=>b.classList.remove("active"));
+event.target.classList.add("active");
+
+if(dia==="mandado"){
+document.getElementById("contenido").innerHTML = mandado();
+return;
+}
+
+document.getElementById("contenido").innerHTML =
+rutina(dia) + comidas(dia) + checklist(dia);
+
+setTimeout(()=>cargar(dia),100);
+}
+
+// INICIO
+cambiarDia("lunes");
+
+</script>
+
+</body>
+</html>
