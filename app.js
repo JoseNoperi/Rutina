@@ -1,196 +1,292 @@
-// APP PRO MAX ULTRA (CORREGIDO BIEN HECHO Y REALISTA)
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>🔥 Rutina Pro</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-const dias = ["Lunes","Martes","Miércoles","Jueves","Viernes","Sábado","Domingo"];
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #f0f0f0;
+    }
 
-// COMIDAS (VOLUMEN LIMPIO REAL)
-const comidas = {
-Lunes:[
-{n:"Desayuno",d:"4 huevos + 2 tortillas + 1 plátano"},
-{n:"Comida",d:"180g pollo + 1 taza arroz + verduras"},
-{n:"Cena",d:"150g pollo + 1 papa"}
-],
-Martes:[
-{n:"Desayuno",d:"Avena 1 taza + leche + plátano"},
-{n:"Comida",d:"180g carne + arroz"},
-{n:"Cena",d:"3 huevos + 2 tortillas"}
-],
-Miércoles:[
-{n:"Desayuno",d:"4 huevos + pan"},
-{n:"Comida",d:"180g pollo + pasta"},
-{n:"Cena",d:"Atún + tostadas"}
-],
-Jueves:[
-{n:"Desayuno",d:"Avena + plátano"},
-{n:"Comida",d:"180g carne + arroz"},
-{n:"Cena",d:"Huevos + tortillas"}
-],
-Viernes:[
-{n:"Desayuno",d:"4 huevos + tortillas"},
-{n:"Comida",d:"Libre controlado"},
-{n:"Cena",d:"Ligero proteína"}
-],
-Sábado:[
-{n:"Desayuno",d:"Huevos + tortillas"},
-{n:"Comida",d:"Pollo + arroz"},
-{n:"Cena",d:"Ligero"}
-],
-Domingo:[
-{n:"Desayuno",d:"Avena + huevo"},
-{n:"Comida",d:"Carne + arroz"},
-{n:"Cena",d:"Ligero"}
-]
-};
+    header {
+      background: #111;
+      color: white;
+      padding: 15px;
+      text-align: center;
+      font-size: 20px;
+    }
 
-// RUTINA GYM COMPLETA REAL
-const ejercicios = {
-Lunes:[
-"Press banca 4x8-10",
-"Press inclinado 4x8-10",
-"Aperturas 3x12",
-"Press militar 4x8",
-"Elevaciones laterales 3x12",
-"Fondos 3x12",
-"Extensión tríceps 3x12"
-],
-Martes:[
-"Dominadas 4x6-8",
-"Remo barra 4x8-10",
-"Jalón polea 3x10",
-"Face pull 3x12",
-"Curl bíceps barra 3x10",
-"Curl alterno 3x12"
-],
-Miércoles:[
-"Sentadilla 4x8",
-"Prensa 4x10",
-"Extensión cuadriceps 3x12",
-"Curl femoral 3x12",
-"Pantorrilla 4x15"
-],
-Jueves:[
-"Press banca inclinado 4x8",
-"Aperturas 3x12",
-"Press militar 4x8",
-"Laterales 3x12",
-"Fondos 3x12",
-"Tríceps polea 3x12"
-],
-Viernes:[
-"Flexiones 4x15",
-"Abdominales 4x20",
-"Plancha 3x1 min"
-],
-Sábado:["Descanso"],
-Domingo:["Descanso"]
-};
+    .container {
+      padding: 15px;
+    }
 
-// RUTINA CARA CON DÍAS CORRECTOS
-function getRutinaCara(day){
-let base=["Limpiar cara","Serum","Hidratante"];
-if(["Martes","Jueves","Sábado"].includes(day)){
-base.splice(1,0,"Hielo 1-2 min");
-}
-if(day!=="Noche") base.push("Bloqueador");
-return base;
-}
+    .card {
+      background: white;
+      border-radius: 15px;
+      padding: 15px;
+      margin: 15px 0;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    }
 
-const rutinaBase = [
-"Rutina cara mañana","Desayuno","Comida","Snack","Entrenamiento","Cena","Rutina cara noche","2L agua"
-];
+    h2 {
+      margin-top: 0;
+    }
 
-const daySelect=document.getElementById("day");
-const checksDiv=document.getElementById("checks");
-const statsDiv=document.getElementById("stats");
+    /* CHECKLIST */
+    .checklist label {
+      display: block;
+      margin: 8px 0;
+      font-size: 14px;
+    }
 
-dias.forEach(d=>{
-let opt=document.createElement("option");
-opt.textContent=d;
-daySelect.appendChild(opt);
-});
+    /* TABLA COMIDAS */
+    .tabla-comidas {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 10px;
+    }
 
-// PESO MEJOR UI
-function saveWeight(){
-let w=document.getElementById("peso").value;
-localStorage.setItem("peso",w);
-}
-function getWeight(){return localStorage.getItem("peso")||"";}
+    .tabla-comidas th {
+      background: #111;
+      color: white;
+      padding: 10px;
+    }
 
-// IA
-function IA(p){
-if(p<50)return"Vas flojo, mejora disciplina";
-if(p<100)return"Vas bien, sigue así";
-return"Perfecto, día completo";
-}
+    .tabla-comidas td {
+      border: 1px solid #ddd;
+      padding: 10px;
+      vertical-align: top;
+    }
 
-function render(){
-let day=daySelect.value;
-checksDiv.innerHTML="";
+    .tabla-comidas tr:nth-child(even) {
+      background: #f5f5f5;
+    }
 
-let data=JSON.parse(localStorage.getItem(day))||[];
-let completed=0;
+    /* RUTINA */
+    ul {
+      padding-left: 20px;
+    }
 
-// COMIDAS
-let html=`<div class='card'><h3>🍽️ Comidas</h3><table>`;
-comidas[day].forEach(c=>html+=`<tr><td>${c.n}</td><td>${c.d}</td></tr>`);
-html+=`</table></div>`;
+    /* BOTONES DIAS */
+    .dias {
+      display: flex;
+      overflow-x: auto;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
 
-// GYM
-html+=`<div class='card'><h3>🏋️ Rutina</h3>`;
-ejercicios[day].forEach(e=>html+=`<p>${e}</p>`);
-html+=`</div>`;
+    .dias button {
+      padding: 10px;
+      border: none;
+      border-radius: 10px;
+      background: #ddd;
+      cursor: pointer;
+    }
 
-// CARA
-html+=`<div class='card'><h3>🧴 Cara</h3>`;
-getRutinaCara(day).forEach(r=>html+=`<p>${r}</p>`);
-html+=`</div>`;
+    .dias button.active {
+      background: #111;
+      color: white;
+    }
+  </style>
+</head>
 
-// FIN DE SEMANA
-if(day==="Sábado"||day==="Domingo"){
-html+=`<div class='card'><h3>💼 Actividad</h3><p>Uber / Trabajo</p></div>`;
-}
+<body>
 
-checksDiv.innerHTML=html;
+<header>Rutina</header>
 
-// CHECKLIST
-rutinaBase.forEach((r,i)=>{
-let div=document.createElement("div");
-let input=document.createElement("input");
-input.type="checkbox";
-input.checked=data[i]||false;
-if(input.checked)completed++;
-input.onchange=()=>{
-data[i]=input.checked;
-localStorage.setItem(day,JSON.stringify(data));
-render();
-};
-div.appendChild(input);
-div.append(" "+r);
-checksDiv.appendChild(div);
-});
+<div class="container">
 
-let percent=Math.round((completed/rutinaBase.length)*100);
+  <!-- DIAS -->
+  <div class="dias">
+    <button onclick="cambiarDia('lunes')" class="active">Lunes</button>
+    <button onclick="cambiarDia('martes')">Martes</button>
+    <button onclick="cambiarDia('miercoles')">Miércoles</button>
+    <button onclick="cambiarDia('jueves')">Jueves</button>
+    <button onclick="cambiarDia('viernes')">Viernes</button>
+    <button onclick="cambiarDia('sabado')">Sábado</button>
+    <button onclick="cambiarDia('domingo')">Domingo</button>
+  </div>
 
-statsDiv.innerHTML=`
-<div class='card'>
-<h3>📊 Progreso</h3>
-<p>${percent}%</p>
-<div style='display:flex;align-items:center;gap:10px;margin-top:10px'>
-<label>⚖️</label>
-<input id='peso' style='flex:1;padding:6px;border-radius:8px;border:1px solid #ccc' placeholder='Tu peso' value='${getWeight()}' oninput='saveWeight()'>
+  <!-- CONTENIDO -->
+  <div id="contenido"></div>
+
 </div>
-<p>${IA(percent)}</p>
-</div>`;
+
+<script>
+
+function cambiarDia(dia) {
+
+  document.querySelectorAll(".dias button").forEach(b => b.classList.remove("active"));
+  event.target.classList.add("active");
+
+  let contenido = "";
+
+  // ===== RUTINAS =====
+
+  const rutinaPush = `
+  <div class="card">
+    <h2>🏋️ PUSH (Pecho, Hombro, Tríceps)</h2>
+
+    <p><strong>Pecho:</strong></p>
+    <ul>
+      <li>Press banca plano – 4x8-12</li>
+      <li>Press inclinado – 4x8-12</li>
+      <li>Aperturas – 3x12</li>
+    </ul>
+
+    <p><strong>Hombro:</strong></p>
+    <ul>
+      <li>Press militar – 4x8-12</li>
+      <li>Elevaciones laterales – 4x12</li>
+      <li>Pájaros – 3x12</li>
+    </ul>
+
+    <p><strong>Tríceps:</strong></p>
+    <ul>
+      <li>Fondos – 3x10</li>
+      <li>Extensión en polea – 3x12</li>
+      <li>Press cerrado – 3x10</li>
+    </ul>
+  </div>`;
+
+  const rutinaPull = `
+  <div class="card">
+    <h2>🏋️ PULL (Espalda, Bíceps)</h2>
+
+    <p><strong>Espalda:</strong></p>
+    <ul>
+      <li>Dominadas – 4x8</li>
+      <li>Remo con barra – 4x8-12</li>
+      <li>Jalón al pecho – 3x12</li>
+    </ul>
+
+    <p><strong>Bíceps:</strong></p>
+    <ul>
+      <li>Curl con barra – 4x10</li>
+      <li>Curl alterno – 3x12</li>
+      <li>Curl martillo – 3x12</li>
+    </ul>
+  </div>`;
+
+  const rutinaLegs = `
+  <div class="card">
+    <h2>🏋️ LEGS (Pierna completa)</h2>
+
+    <ul>
+      <li>Sentadilla – 4x8-12</li>
+      <li>Prensa – 4x10</li>
+      <li>Extensión de pierna – 3x12</li>
+      <li>Curl femoral – 3x12</li>
+      <li>Pantorrilla – 4x15</li>
+    </ul>
+  </div>`;
+
+  // ===== CARA =====
+
+  function rutinaCara(hielo=false){
+    return `
+    <div class="card">
+      <h2>🧴 Rutina de cara</h2>
+      <ul>
+        <li>Limpiador facial</li>
+        ${hielo ? "<li>Hielo en la cara</li>" : ""}
+        <li>Serum</li>
+        <li>Hidratante</li>
+        <li>Bloqueador solar</li>
+      </ul>
+    </div>`;
+  }
+
+  // ===== COMIDA =====
+
+  const comidas = `
+  <div class="card">
+    <h2>🍽️ Comidas</h2>
+
+    <table class="tabla-comidas">
+      <tr>
+        <th>Comida</th>
+        <th>Alimentos</th>
+      </tr>
+
+      <tr>
+        <td>Desayuno</td>
+        <td>1 taza avena<br>2 huevos<br>1 plátano</td>
+      </tr>
+
+      <tr>
+        <td>Comida</td>
+        <td>150g pollo<br>1 taza arroz<br>Verduras</td>
+      </tr>
+
+      <tr>
+        <td>Cena</td>
+        <td>150g carne<br>Arroz o papa<br>Verduras</td>
+      </tr>
+    </table>
+  </div>`;
+
+  // ===== CHECKLIST =====
+
+  const checklist = `
+  <div class="card">
+    <h2>✔ Checklist</h2>
+    <div class="checklist">
+      <label><input type="checkbox"> Rutina cara mañana</label>
+      <label><input type="checkbox"> Desayuno</label>
+      <label><input type="checkbox"> Comida</label>
+      <label><input type="checkbox"> Gym</label>
+      <label><input type="checkbox"> Cena</label>
+      <label><input type="checkbox"> Rutina cara noche</label>
+      <label><input type="checkbox"> 2L agua</label>
+    </div>
+  </div>`;
+
+  // ===== LOGICA DIAS =====
+
+  if(dia === "lunes"){
+    contenido = rutinaPush + rutinaCara() + comidas + checklist;
+  }
+
+  if(dia === "martes"){
+    contenido = rutinaPull + rutinaCara(true) + comidas + checklist;
+  }
+
+  if(dia === "miercoles"){
+    contenido = rutinaLegs + rutinaCara() + comidas + checklist;
+  }
+
+  if(dia === "jueves"){
+    contenido = rutinaPush + rutinaCara(true) + comidas + checklist;
+  }
+
+  if(dia === "viernes"){
+    contenido = rutinaPull + rutinaCara() + comidas + checklist;
+  }
+
+  if(dia === "sabado"){
+    contenido = rutinaLegs + rutinaCara(true) + comidas + checklist;
+  }
+
+  if(dia === "domingo"){
+    contenido = `
+    <div class="card">
+      <h2>😴 Descanso</h2>
+      <p>Recuperación + tareas pendientes</p>
+    </div>` + rutinaCara() + comidas + checklist;
+  }
+
+  document.getElementById("contenido").innerHTML = contenido;
 }
 
-if("Notification"in window)Notification.requestPermission();
+// Cargar lunes por defecto
+cambiarDia("lunes");
 
-setInterval(()=>{
-let h=new Date().getHours();
-if(h===11)new Notification("Desayuno");
-if(h===18)new Notification("Gym");
-if(h===22)new Notification("Cara");
-},60000);
+</script>
 
-
-daySelect.onchange=render;
-render();
+</body>
+</html>
