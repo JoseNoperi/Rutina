@@ -4,14 +4,17 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Rutina</title>
-
 <style>
+*, *::before, *::after { box-sizing: border-box; }
+
 body {
   margin: 0;
-  font-family: Arial;
+  font-family: Arial, sans-serif;
   background: #f0f0f0;
+  min-height: 100vh;
 }
 
+/* ===== HEADER ===== */
 header {
   background: #111;
   color: white;
@@ -20,31 +23,31 @@ header {
   font-size: 20px;
 }
 
-.container {
-  padding: 15px;
+/* ===== MOBILE LAYOUT (default) ===== */
+.layout {
+  display: block;
 }
 
-.card {
-  background: white;
-  border-radius: 15px;
-  padding: 15px;
-  margin: 15px 0;
-  box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+.sidebar {
+  padding: 12px 15px 0;
 }
 
 .dias {
   display: flex;
   overflow-x: auto;
-  gap: 10px;
+  gap: 8px;
+  padding-bottom: 4px;
 }
 
 .dias button {
-  padding: 10px;
+  padding: 9px 13px;
   border: none;
   border-radius: 10px;
   background: #ddd;
   cursor: pointer;
   white-space: nowrap;
+  font-size: 14px;
+  flex-shrink: 0;
 }
 
 .dias button.active {
@@ -52,6 +55,103 @@ header {
   color: white;
 }
 
+.main-content {
+  padding: 10px 15px 20px;
+}
+
+/* ===== DESKTOP LAYOUT ===== */
+@media (min-width: 768px) {
+  body {
+    background: #e8e8e8;
+  }
+
+  header {
+    font-size: 22px;
+    padding: 18px;
+    letter-spacing: 1px;
+  }
+
+  .layout {
+    display: grid;
+    grid-template-columns: 220px 1fr;
+    min-height: calc(100vh - 58px);
+    max-width: 1100px;
+    margin: 0 auto;
+    gap: 0;
+  }
+
+  .sidebar {
+    background: #1a1a1a;
+    padding: 20px 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    border-radius: 0 0 0 12px;
+  }
+
+  .dias {
+    flex-direction: column;
+    overflow-x: visible;
+    gap: 6px;
+    padding-bottom: 0;
+  }
+
+  .dias button {
+    width: 100%;
+    text-align: left;
+    border-radius: 8px;
+    background: transparent;
+    color: #aaa;
+    padding: 10px 14px;
+    font-size: 14px;
+    transition: background 0.15s, color 0.15s;
+  }
+
+  .dias button:hover {
+    background: #2e2e2e;
+    color: white;
+  }
+
+  .dias button.active {
+    background: #fff;
+    color: #111;
+    font-weight: bold;
+  }
+
+  .main-content {
+    padding: 24px 28px;
+    background: #f0f0f0;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    align-content: start;
+  }
+
+  /* Cards ocupan columna completa o doble según contenido */
+  .card {
+    margin: 0 !important;
+  }
+
+  .card.full-width {
+    grid-column: 1 / -1;
+  }
+}
+
+/* ===== CARDS ===== */
+.card {
+  background: white;
+  border-radius: 15px;
+  padding: 18px;
+  margin: 12px 0;
+  box-shadow: 0 3px 10px rgba(0,0,0,0.08);
+}
+
+.card h2 {
+  margin-top: 0;
+  font-size: 17px;
+}
+
+/* ===== TABLAS ===== */
 .tabla-comidas {
   width: 100%;
   border-collapse: collapse;
@@ -61,23 +161,31 @@ header {
 .tabla-comidas th {
   background: #111;
   color: white;
-  padding: 10px;
+  padding: 9px 10px;
+  font-size: 14px;
+  text-align: left;
 }
 
 .tabla-comidas td {
   border: 1px solid #ddd;
-  padding: 10px;
+  padding: 9px 10px;
+  font-size: 14px;
 }
 
+/* ===== CHECKLIST ===== */
 .checklist label {
   display: block;
-  margin: 6px 0;
+  margin: 7px 0;
+  font-size: 14px;
+  cursor: pointer;
 }
 
-/* PROGRESO */
-.progress-box {
-  margin-top: 10px;
+.checklist input[type="checkbox"] {
+  margin-right: 6px;
 }
+
+/* ===== PROGRESO ===== */
+.progress-box { margin-top: 12px; }
 
 .progress-bar {
   width: 100%;
@@ -91,37 +199,45 @@ header {
   height: 100%;
   width: 0%;
   background: #111;
-  transition: 0.3s;
+  transition: width 0.3s;
 }
 
 .progress-text {
   font-size: 12px;
   margin-top: 5px;
+  color: #555;
 }
 
 button.reset {
-  margin-top: 10px;
-  padding: 8px;
+  margin-top: 12px;
+  padding: 8px 14px;
   border: none;
   border-radius: 8px;
   background: #111;
   color: white;
+  cursor: pointer;
+  font-size: 13px;
 }
 
-/* Listas sin viñetas para mejor lectura (opcional para el skincare) */
+button.reset:hover { background: #333; }
+
+/* ===== SKINCARE LISTAS ===== */
 .lista-skincare {
   padding-left: 20px;
-  margin-top: 5px;
+  margin-top: 6px;
+  font-size: 14px;
 }
 
-/* Títulos internos para el mandado */
+.lista-skincare li { margin: 4px 0; }
+
+/* ===== MANDADO ===== */
 .categoria-mandado {
-  margin-top: 15px;
-  margin-bottom: 5px;
-  font-size: 16px;
+  margin-top: 14px;
+  margin-bottom: 6px;
+  font-size: 15px;
   color: #333;
   border-bottom: 1px solid #eee;
-  padding-bottom: 5px;
+  padding-bottom: 4px;
 }
 </style>
 </head>
@@ -130,123 +246,84 @@ button.reset {
 
 <header>Rutina</header>
 
-<div class="container">
+<div class="layout">
+  <div class="sidebar">
+    <div class="dias">
+      <button onclick="cambiarDia('lunes',this)" class="active">Lunes</button>
+      <button onclick="cambiarDia('martes',this)">Martes</button>
+      <button onclick="cambiarDia('miercoles',this)">Miércoles</button>
+      <button onclick="cambiarDia('jueves',this)">Jueves</button>
+      <button onclick="cambiarDia('viernes',this)">Viernes</button>
+      <button onclick="cambiarDia('sabado',this)">Sábado</button>
+      <button onclick="cambiarDia('domingo',this)">Domingo</button>
+      <button onclick="cambiarDia('mandado',this)">🛒 Mandado</button>
+    </div>
+  </div>
 
-<div class="dias">
-  <button onclick="cambiarDia('lunes')" class="active">Lunes</button>
-  <button onclick="cambiarDia('martes')">Martes</button>
-  <button onclick="cambiarDia('miercoles')">Miércoles</button>
-  <button onclick="cambiarDia('jueves')">Jueves</button>
-  <button onclick="cambiarDia('viernes')">Viernes</button>
-  <button onclick="cambiarDia('sabado')">Sábado</button>
-  <button onclick="cambiarDia('domingo')">Domingo</button>
-  <button onclick="cambiarDia('mandado')">🛒 Mandado</button>
-</div>
-
-<div id="contenido"></div>
-
+  <div class="main-content" id="contenido"></div>
 </div>
 
 <script>
 
-// ===== RUTINAS COMPLETAS (Sin cambios) =====
+var diaActual = "lunes";
+
+function esDesktop(){
+  return window.innerWidth >= 768;
+}
+
+// ===== RUTINAS =====
 function rutina(dia){
-
-if(dia==="lunes" || dia==="jueves"){
-return `<div class="card">
+  if(dia==="lunes" || dia==="jueves"){
+    return `<div class="card">
 <h2>🏋️ PUSH</h2>
-
 <b>Pecho:</b>
-<ul>
-<li>Press banca plano – 4x8-12</li>
-<li>Press inclinado – 4x8-12</li>
-<li>Aperturas – 3x12</li>
-</ul>
-
+<ul><li>Press banca plano – 4x8-12</li><li>Press inclinado – 4x8-12</li><li>Aperturas – 3x12</li></ul>
 <b>Hombro:</b>
-<ul>
-<li>Press militar – 4x8-12</li>
-<li>Elevaciones laterales – 4x12</li>
-<li>Pájaros – 3x12</li>
-</ul>
-
+<ul><li>Press militar – 4x8-12</li><li>Elevaciones laterales – 4x12</li><li>Pájaros – 3x12</li></ul>
 <b>Tríceps:</b>
-<ul>
-<li>Fondos – 3x10</li>
-<li>Extensión polea – 3x12</li>
-<li>Press cerrado – 3x10</li>
-</ul>
+<ul><li>Fondos – 3x10</li><li>Extensión polea – 3x12</li><li>Press cerrado – 3x10</li></ul>
 </div>`;
-}
-
-if(dia==="martes"){
-return `<div class="card">
+  }
+  if(dia==="martes"){
+    return `<div class="card">
 <h2>🏋️ PULL</h2>
-
 <b>Espalda:</b>
-<ul>
-<li>Dominadas – 4x8</li>
-<li>Remo barra – 4x8-12</li>
-<li>Jalón pecho – 3x12</li>
-</ul>
-
+<ul><li>Dominadas – 4x8</li><li>Remo barra – 4x8-12</li><li>Jalón pecho – 3x12</li></ul>
 <b>Bíceps:</b>
-<ul>
-<li>Curl barra – 4x10</li>
-<li>Curl alterno – 3x12</li>
-<li>Martillo – 3x12</li>
-</ul>
+<ul><li>Curl barra – 4x10</li><li>Curl alterno – 3x12</li><li>Martillo – 3x12</li></ul>
 </div>`;
-}
-
-if(dia==="miercoles"){
-return `<div class="card">
+  }
+  if(dia==="miercoles"){
+    return `<div class="card">
 <h2>🏋️ LEGS</h2>
-
 <b>Pierna:</b>
-<ul>
-<li>Sentadilla – 4x8-12</li>
-<li>Prensa – 4x10</li>
-<li>Extensión – 3x12</li>
-<li>Femoral – 3x12</li>
-<li>Pantorrilla – 4x15</li>
-</ul>
+<ul><li>Sentadilla – 4x8-12</li><li>Prensa – 4x10</li><li>Extensión – 3x12</li><li>Femoral – 3x12</li><li>Pantorrilla – 4x15</li></ul>
 </div>`;
-}
-
-if(dia==="viernes"){
-return `<div class="card">
+  }
+  if(dia==="viernes"){
+    return `<div class="card">
 <h2>🏠 Casa</h2>
-<ul>
-<li>Flexiones 4x12<br></li>
-<li>Sentadillas 4x15<br></li>
-<li>Abdomen 4x15</li>
-</ul>
+<ul><li>Flexiones 4x12</li><li>Sentadillas 4x15</li><li>Abdomen 4x15</li></ul>
 </div>`;
+  }
+  if(dia==="sabado" || dia==="domingo"){
+    return `<div class="card"><h2>💼 Trabajo</h2>Actividad ligera</div>`;
+  }
+  return "";
 }
 
-if(dia==="sabado" || dia==="domingo"){
-return `<div class="card">
-<h2>💼 Trabajo</h2>
-Actividad ligera
-</div>`;
-}
-
-}
-
-// ===== COMIDAS (Sin cambios) =====
+// ===== COMIDAS =====
 function comidas(dia){
-const data = {
-lunes:["80g avena + 2 huevos + 1 plátano","150g pollo + 150g arroz + verduras","120g atún + 2 tortillas + verduras"],
-martes:["80g avena + 2 huevos + 1 manzana","150g carne molida + 150g arroz + verduras","120g pollo + 2 tortillas + verduras"],
-miercoles:["80g avena + 2 huevos + 1 plátano","150g pollo + 150g arroz + verduras","120g atún + 2 tortillas + verduras"],
-jueves:["80g avena + 2 huevos + 1 manzana","150g carne molida + 150g arroz + verduras","120g pollo + 2 tortillas + verduras"],
-viernes:["80g avena + 2 huevos + 1 plátano","150g pollo + 150g arroz + verduras","120g atún + 2 tortillas + verduras"],
-sabado:["80g avena + 2 huevos + 1 plátano","150g carne molida + 150g arroz + verduras","120g pollo + 2 tortillas + verduras"],
-domingo:["80g avena + 2 huevos + fruta","150g pollo o carne + 150g arroz + verduras","120g atún o pollo + 2 tortillas + verduras"]
-};
-
-return `<div class="card">
+  const data = {
+    lunes:    ["80g avena + 2 huevos + 1 plátano","150g pollo + 150g arroz + verduras","120g atún + 2 tortillas + verduras"],
+    martes:   ["80g avena + 2 huevos + 1 manzana","150g carne molida + 150g arroz + verduras","120g pollo + 2 tortillas + verduras"],
+    miercoles:["80g avena + 2 huevos + 1 plátano","150g pollo + 150g arroz + verduras","120g atún + 2 tortillas + verduras"],
+    jueves:   ["80g avena + 2 huevos + 1 manzana","150g carne molida + 150g arroz + verduras","120g pollo + 2 tortillas + verduras"],
+    viernes:  ["80g avena + 2 huevos + 1 plátano","150g pollo + 150g arroz + verduras","120g atún + 2 tortillas + verduras"],
+    sabado:   ["80g avena + 2 huevos + 1 plátano","150g carne molida + 150g arroz + verduras","120g pollo + 2 tortillas + verduras"],
+    domingo:  ["80g avena + 2 huevos + fruta","150g pollo o carne + 150g arroz + verduras","120g atún o pollo + 2 tortillas + verduras"]
+  };
+  return `<div class="card">
 <h2>🍽️ Comidas</h2>
 <table class="tabla-comidas">
 <tr><th>Tiempo</th><th>Comida</th></tr>
@@ -257,193 +334,148 @@ return `<div class="card">
 </div>`;
 }
 
-// ===== SKINCARE (Sin cambios) =====
+// ===== SKINCARE =====
 function skincare(dia){
-  let pasoHielo = "";
-  if(dia === "martes" || dia === "jueves" || dia === "sabado"){
-    pasoHielo = `<li><b>Agua fría → Sumergir la cara en agua con hielo 1–2 minutos</b></li>`;
-  }
-
+  let hielo = (dia==="martes"||dia==="jueves"||dia==="sabado")
+    ? `<li><b>Agua fría — sumergir cara en agua con hielo 1-2 min</b></li>` : "";
   return `<div class="card">
-  <h2>🧴 Skincare</h2>
-  
-  <b>🌅 MAÑANA (TODOS LOS DÍAS)</b>
-  <ul class="lista-skincare">
-    <li>Lavarse los dientes</li>
-    <li>Lavar cara</li>
-    ${pasoHielo}
-    <li>Secar cara</li>
-    <li>Aplicar gotas para ojeras</li>
-    <li>Aplicar minoxidil en la barba</li>
-    <li>Crema hidratante</li>
-    <li>Protector solar</li>
-  </ul>
-  
-  <br>
-  
-  <b>🌙 NOCHE (TODOS LOS DÍAS)</b>
-  <ul class="lista-skincare">
-    <li>Lavarse los dientes</li>
-    <li>Lavar cara</li>
-    <li>Secar cara</li>
-    <li>Aplicar minoxidil en la barba</li>
-    <li>Crema hidratante</li>
-  </ul>
-  </div>`;
-}
-
-// ===== CHECKLIST (Sin cambios) =====
-function checklist(dia){
-
-const tareas = [
-"Rutina cara mañana",
-"Desayuno",
-"Comida",
-"Snack",
-"Gym / Actividad",
-"Cena",
-"Rutina cara noche",
-"2L agua"
-];
-
-let html = `<div class="card"><h2>✔ Checklist</h2><div class="checklist">`;
-
-tareas.forEach((t,i)=>{
-let extra = "";
-
-if(t.includes("cara") && (dia==="martes" || dia==="jueves" || dia==="sabado")){
-extra = " (hielo)";
-}
-
-html += `<label>
-<input type="checkbox" id="${dia}-${i}" onchange="guardar('${dia}-${i}')">
-${t}${extra}
-</label>`;
-});
-
-html += `</div>
-
-<div class="progress-box">
-<div class="progress-bar"><div class="progress-fill" id="barra"></div></div>
-<div class="progress-text" id="texto"></div>
-</div>
-
-<button class="reset" onclick="resetSemana()">Reiniciar semana</button>
-
+<h2>🧴 Skincare</h2>
+<b>🌅 Mañana</b>
+<ul class="lista-skincare">
+  <li>Lavarse los dientes</li>
+  <li>Lavar cara</li>
+  ${hielo}
+  <li>Secar cara</li>
+  <li>Aplicar gotas para ojeras</li>
+  <li>Aplicar minoxidil en la barba</li>
+  <li>Crema hidratante</li>
+  <li>Protector solar</li>
+</ul>
+<b>🌙 Noche</b>
+<ul class="lista-skincare">
+  <li>Lavarse los dientes</li>
+  <li>Lavar cara</li>
+  <li>Secar cara</li>
+  <li>Aplicar minoxidil en la barba</li>
+  <li>Crema hidratante</li>
+</ul>
 </div>`;
-
-return html;
 }
 
-// ===== GUARDAR =====
-function guardar(id){
-localStorage.setItem(id, document.getElementById(id).checked);
-actualizarProgreso();
+// ===== CHECKLIST =====
+function checklist(dia){
+  const tareas = [
+    "Rutina cara mañana",
+    "Desayuno",
+    "Comida",
+    "Snack",
+    "Gym / Actividad",
+    "Cena",
+    "Rutina cara noche",
+    "2L agua"
+  ];
+
+  let html = `<div class="card full-width"><h2>✔ Checklist</h2><div class="checklist">`;
+
+  tareas.forEach((t,i)=>{
+    let extra = (t.includes("cara") && (dia==="martes"||dia==="jueves"||dia==="sabado")) ? " (hielo)" : "";
+    html += `<label><input type="checkbox" id="${dia}-${i}" onchange="guardar('${dia}-${i}')">${t}${extra}</label>`;
+  });
+
+  html += `</div>
+<div class="progress-box">
+  <div class="progress-bar"><div class="progress-fill" id="barra"></div></div>
+  <div class="progress-text" id="texto"></div>
+</div>
+<button class="reset" onclick="resetSemana()">Reiniciar semana</button>
+</div>`;
+  return html;
 }
 
-// ===== CARGAR =====
-function cargar(dia){
-let total = 8;
-let done = 0;
-
-for(let i=0;i<8;i++){
-let id = dia+"-"+i;
-if(localStorage.getItem(id)==="true"){
-document.getElementById(id).checked = true;
-done++;
-}
-}
-
-actualizarBarra(done,total);
-
-// reset automático domingo
-if(dia==="domingo" && done===8){
-resetSemana();
-}
-}
-
-// ===== PROGRESO =====
-function actualizarProgreso(){
-let checks = document.querySelectorAll(".checklist input");
-let total = checks.length;
-let done = 0;
-
-checks.forEach(c=>{ if(c.checked) done++; });
-
-actualizarBarra(done,total);
-}
-
-function actualizarBarra(done,total){
-let pct = (done/total)*100;
-document.getElementById("barra").style.width = pct+"%";
-document.getElementById("texto").innerText = done+" / "+total;
-}
-
-// ===== RESET =====
-function resetSemana(){
-localStorage.clear();
-alert("Semana reiniciada");
-location.reload();
-}
-
-// ===== MANDADO (NUEVA SECCIÓN CATEGORIZADA) =====
+// ===== MANDADO =====
 function mandado(){
-return `<div class="card">
+  return `<div class="card full-width">
 <h2>🛒 Mandado semanal</h2>
-
-<h3 class="categoria-mandado">🥩 Principal (Proteínas)</h3>
+<h3 class="categoria-mandado">🥩 Proteínas</h3>
 <div class="checklist">
   <label><input type="checkbox"> 2-3 kg de Pollo</label>
   <label><input type="checkbox"> 1 kg de Carne molida</label>
   <label><input type="checkbox"> 30 Huevos</label>
   <label><input type="checkbox"> 5-6 latas de Atún</label>
 </div>
-
-<h3 class="categoria-mandado">🌾 Despensa (Carbohidratos y Grasas)</h3>
+<h3 class="categoria-mandado">🌾 Carbohidratos y Grasas</h3>
 <div class="checklist">
   <label><input type="checkbox"> 1 kg de Arroz</label>
   <label><input type="checkbox"> 1 kg de Avena</label>
   <label><input type="checkbox"> 2-3 paquetes de Tortillas</label>
   <label><input type="checkbox"> 1 frasco de Crema de cacahuate</label>
 </div>
-
 <h3 class="categoria-mandado">🍎 Frutas</h3>
 <div class="checklist">
   <label><input type="checkbox"> 7-10 Plátanos</label>
   <label><input type="checkbox"> 5-7 Manzanas</label>
 </div>
-
-<h3 class="categoria-mandado">🥦 Verduras (Elige 2 o 3 para la semana)</h3>
+<h3 class="categoria-mandado">🥦 Verduras (elige 2 o 3)</h3>
 <div class="checklist">
   <label><input type="checkbox"> Brócoli o Coliflor</label>
   <label><input type="checkbox"> Calabacitas o Zanahorias</label>
-  <label><input type="checkbox"> Tomate y Cebolla (básico para guisar)</label>
+  <label><input type="checkbox"> Tomate y Cebolla</label>
   <label><input type="checkbox"> Lechuga o Espinacas</label>
   <label><input type="checkbox"> Champiñones o Ejotes</label>
 </div>
-
 </div>`;
 }
 
-// ===== CAMBIO DIA =====
-function cambiarDia(dia){
-document.querySelectorAll(".dias button").forEach(b=>b.classList.remove("active"));
-event.target.classList.add("active");
-
-if(dia==="mandado"){
-document.getElementById("contenido").innerHTML = mandado();
-return;
+// ===== GUARDAR / CARGAR / PROGRESO =====
+function guardar(id){
+  localStorage.setItem(id, document.getElementById(id).checked);
+  actualizarProgreso();
 }
 
-// Aquí se inyecta el skincare antes del checklist
-document.getElementById("contenido").innerHTML =
-rutina(dia) + comidas(dia) + skincare(dia) + checklist(dia);
+function cargar(dia){
+  for(let i=0;i<8;i++){
+    let id=dia+"-"+i;
+    let el=document.getElementById(id);
+    if(el && localStorage.getItem(id)==="true") el.checked=true;
+  }
+  actualizarProgreso();
+}
 
-setTimeout(()=>cargar(dia),100);
+function actualizarProgreso(){
+  let checks=document.querySelectorAll(".checklist input[id]");
+  let total=checks.length, done=0;
+  checks.forEach(c=>{ if(c.checked) done++; });
+  let barra=document.getElementById("barra");
+  let texto=document.getElementById("texto");
+  if(barra) barra.style.width=(done/total*100)+"%";
+  if(texto) texto.innerText=done+" / "+total;
+}
+
+function resetSemana(){
+  localStorage.clear();
+  alert("Semana reiniciada");
+  location.reload();
+}
+
+// ===== CAMBIO DÍA =====
+function cambiarDia(dia, btn){
+  diaActual=dia;
+  document.querySelectorAll(".dias button").forEach(b=>b.classList.remove("active"));
+  if(btn) btn.classList.add("active");
+
+  const contenido=document.getElementById("contenido");
+
+  if(dia==="mandado"){
+    contenido.innerHTML=mandado();
+    return;
+  }
+
+  contenido.innerHTML=rutina(dia)+comidas(dia)+skincare(dia)+checklist(dia);
+  setTimeout(()=>cargar(dia),50);
 }
 
 // INICIO
-cambiarDia("lunes");
+cambiarDia("lunes", document.querySelector(".dias button"));
 
 </script>
 
