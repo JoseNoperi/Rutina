@@ -628,8 +628,6 @@ function loadKey(){const k=ls('gemini-key')||'';const el=document.getElementById
 // ── AI / GEMINI via PROXY ─────────────────────────
 async function handleImg(ev){
   const file=ev.target.files[0];if(!file)return;
-  const apiKey=ls('gemini-key')||document.getElementById('gemini-key').value.trim();
-  if(!apiKey){toast('Ingresa tu API Key de Gemini primero');return;}
 
   document.getElementById('upload-zone').style.display='none';
   document.getElementById('ai-loading').style.display='flex';
@@ -642,7 +640,8 @@ async function handleImg(ev){
     const res=await fetch(PROXY,{
       method:'POST',
       headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({apiKey,imageBase64:b64,mimeType})
+      // Ya no enviamos la apiKey, Cloudflare se encarga
+      body:JSON.stringify({imageBase64:b64,mimeType}) 
     });
 
     if(!res.ok){
@@ -652,7 +651,6 @@ async function handleImg(ev){
 
     const data=await res.json();
 
-    // Manejo de errores de Gemini
     if(data.error){throw new Error(data.error.message||'Error de Gemini');}
 
     const text=data.candidates?.[0]?.content?.parts?.[0]?.text||'';
@@ -664,7 +662,7 @@ async function handleImg(ev){
 
   }catch(err){
     console.error(err);
-    toast('Error: '+(err.message||'Verifica tu API Key'));
+    toast('Error al analizar la imagen');
     cancelAI();
   }
 }
