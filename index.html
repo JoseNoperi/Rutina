@@ -641,7 +641,11 @@ async function handleImg(ev){
       method:'POST',
       headers:{'Content-Type':'application/json'},
       // Ya no enviamos la apiKey, Cloudflare se encarga
-      body:JSON.stringify({imageBase64:b64,mimeType}) 
+     body:JSON.stringify({
+      mode:'bascula',
+      imageBase64:b64,
+      mimeType
+    })
     });
 
     if(!res.ok){
@@ -653,13 +657,15 @@ async function handleImg(ev){
 
     if(data.error){throw new Error(data.error.message||'Error de Gemini');}
 
-    const text=data.candidates?.[0]?.content?.parts?.[0]?.text||'';
-    if(!text)throw new Error('Respuesta vacía de Gemini');
+    const result = data.result;
 
-    const clean=text.replace(/```json|```/g,'').trim();
-    pendingW=JSON.parse(clean);
+    if(!result){
+    throw new Error('Respuesta inválida del servidor');
+    }
+  
+    pendingW = result;
     showAIResult(pendingW);
-
+    
   }catch(err){
     console.error(err);
     toast('Error al analizar la imagen');
